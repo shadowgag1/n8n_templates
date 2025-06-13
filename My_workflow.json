@@ -1,0 +1,387 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1Zju8QPbtLvnIsgrrUB-aau0jMlDdj6Ly",
+          "mode": "list",
+          "cachedResultName": "n8n send",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1Zju8QPbtLvnIsgrrUB-aau0jMlDdj6Ly"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -540
+      ],
+      "id": "d49d8fae-bc8a-4f33-bc81-64766ec4c296",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "sd0LYVKq3aqtDAz7",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        60,
+        -540
+      ],
+      "id": "9b13fba4-ac3b-475f-998c-c06a0421e5ff",
+      "name": "Google Drive",
+      "retryOnFail": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "sd0LYVKq3aqtDAz7",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "o3-mini",
+          "mode": "list",
+          "cachedResultName": "O3-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "\"Write me a short, impactful motivational caption for Instagram. It should be exactly 3 lines:\n\nLine 1: A powerful hook or quote about hard work, growth, or consistency.\n\nLine 2: A follow-up line that adds emotion or context (like struggle or mindset).\n\nLine 3: A strong call to action or takeaway thought.\nEnd the caption with 3 trending and relevant motivational hashtags (like #Mindset, #Discipline, #RiseAndGrind).”**\n\nwrite more hashtags around 10 according to you which can go viral and are famous"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        260,
+        -540
+      ],
+      "id": "5b5ef1d7-f1b5-466f-bbb6-7913109ebaf6",
+      "name": "OpenAI",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "4gfl1J0OMdpPew1l",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apppaCw5rfDsXwnAK",
+          "mode": "list",
+          "cachedResultName": "IG Reels",
+          "cachedResultUrl": "https://airtable.com/apppaCw5rfDsXwnAK"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbloCaJKLmshuUmUj",
+          "mode": "list",
+          "cachedResultName": "Media",
+          "cachedResultUrl": "https://airtable.com/apppaCw5rfDsXwnAK/tbloCaJKLmshuUmUj"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Caption": "={{ $json.message.content }}",
+            "Name": "={{ $('Google Drive Trigger').item.json.name }}",
+            "URL": "={{ $('Google Drive Trigger').item.json.webContentLink }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Caption",
+              "displayName": "Caption",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        620,
+        -540
+      ],
+      "id": "ae4ba6e5-fbf1-49b9-ab87-34d862daf91e",
+      "name": "Reels Saver",
+      "retryOnFail": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "bFndjzqifFw1IwS7",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "17841463356990194",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "video_url",
+                "value": "={{ $json.fields.URL }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $('OpenAI').item.json.message.content }}"
+              },
+              {
+                "name": "media_type",
+                "value": "REELS"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        840,
+        -540
+      ],
+      "id": "4ec9c3c4-e93e-43e6-a6ce-b32046614e5e",
+      "name": "Facebook Graph API",
+      "retryOnFail": true,
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "VdxLCqWQyppXEbgK",
+          "name": "Reels_v3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "17841463356990194",
+        "edge": "media_publish",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "creation_id",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        -540
+      ],
+      "id": "d74cc8af-32a6-499e-b4aa-ffc01828cdd3",
+      "name": "Facebook Graph API1",
+      "retryOnFail": true,
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "w4DiLy94g2WB2brU",
+          "name": "Reels_v2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1020,
+        -540
+      ],
+      "id": "27bc0035-9924-4773-9cca-751ea1d59273",
+      "name": "Wait",
+      "webhookId": "536ae18d-5c41-4393-aae8-acdca92080b4"
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1460,
+        -540
+      ],
+      "id": "02143e26-2b85-4cca-95c2-9c9f233e078f",
+      "name": "Google Drive1",
+      "retryOnFail": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "sd0LYVKq3aqtDAz7",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Reels Saver",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reels Saver": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "27ea56a8-c7c9-41e6-98c6-9d468e33ab1e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1699a9a632b68701c4559a169ffd86cc106857120ed3b810110d72f43c968c9c"
+  },
+  "id": "8va0Ic8tzK0UdbnW",
+  "tags": []
+}
